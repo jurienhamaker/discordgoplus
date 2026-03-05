@@ -3,8 +3,8 @@ package disgolf_test
 import (
 	"testing"
 
-	"github.com/FedorLap2006/disgolf"
 	"github.com/bwmarrin/discordgo"
+	"github.com/jurienhamaker/disgolf"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -61,6 +61,7 @@ func TestRouter_Update(t *testing.T) {
 	assert.Equal(t, command, oldcmd)
 	assert.Equal(t, newCommand, router.Get(command.Name))
 }
+
 func TestRouter_Unregister(t *testing.T) {
 	command := &disgolf.Command{
 		Name:        "test_unregister",
@@ -79,6 +80,7 @@ func TestRouter_Unregister(t *testing.T) {
 	assert.True(t, existed)
 	assert.Equal(t, command, oldcmd)
 }
+
 func TestRouter_List(t *testing.T) {
 	commandList := []*disgolf.Command{
 		{
@@ -106,6 +108,7 @@ func TestRouter_List(t *testing.T) {
 	assert.Equal(t, commandList, router.List())
 	assert.Len(t, router.Commands, len(commandList))
 }
+
 func TestRouter_Count(t *testing.T) {
 	commandList := []*disgolf.Command{
 		{

@@ -13,10 +13,17 @@ type OptionsMap = map[string]*discordgo.ApplicationCommandInteractionDataOption
 // and contains interaction and preprocessed options.
 type Ctx struct {
 	*discordgo.Session `json:"-"`
-	Caller      *Command `json:"caller"`
-	Interaction *discordgo.Interaction `json:"interaction"`
-	Options     OptionsMap `json:"options"`
-	OptionsRaw  []*discordgo.ApplicationCommandInteractionDataOption `json:"options_raw"`
+	Caller             *Command                                             `json:"caller"`
+	MessageComponent   *MessageComponent                                    `json:"message_component"`
+	Modal              *Modal                                               `json:"modal"`
+	Interaction        *discordgo.Interaction                               `json:"interaction"`
+	Options            OptionsMap                                           `json:"options"`
+	OptionsRaw         []*discordgo.ApplicationCommandInteractionDataOption `json:"options_raw"`
+
+	MessageComponentOptions map[string]string `json:"message_component_options"`
+
+	ModalData    discordgo.ModalSubmitInteractionData `json:"modal_data"`
+	ModalOptions map[string]string                    `json:"modal_options"`
 
 	remainingHandlers []Handler
 }
@@ -38,12 +45,22 @@ func (ctx *Ctx) Next() {
 }
 
 func (ctx *Ctx) String() string {
-	return fmt.Sprintf(`caller: %s guild: %s options: %v`, ctx.Caller.Name, ctx.Interaction.GuildID, ctx.Options)
+	return fmt.Sprintf(
+		`caller: %s guild: %s options: %v`,
+		ctx.Caller.Name,
+		ctx.Interaction.GuildID,
+		ctx.Options,
+	)
 }
 
-
 // NewCtx constructs ctx from given parameters.
-func NewCtx(s *discordgo.Session, caller *Command, i *discordgo.Interaction, parent *discordgo.ApplicationCommandInteractionDataOption, handlers []Handler) *Ctx {
+func NewCtx(
+	s *discordgo.Session,
+	caller *Command,
+	i *discordgo.Interaction,
+	parent *discordgo.ApplicationCommandInteractionDataOption,
+	handlers []Handler,
+) *Ctx {
 	options := i.ApplicationCommandData().Options
 	if parent != nil {
 		options = parent.Options
@@ -59,7 +76,49 @@ func NewCtx(s *discordgo.Session, caller *Command, i *discordgo.Interaction, par
 	}
 }
 
-func makeOptionMap(options []*discordgo.ApplicationCommandInteractionDataOption) (m OptionsMap) {
+// NewCtx constructs ctx from given parameters.
+func NewMessageComponentCtx(
+	s *discordgo.Session,
+	caller *MessageComponent,
+	i *discordgo.Interaction,
+	options map[string]string,
+	handlers []Handler,
+) *Ctx {
+	return &Ctx{
+		Session:          s,
+		MessageComponent: caller,
+		Interaction:      i,
+
+		MessageComponentOptions: options,
+
+		remainingHandlers: handlers,
+	}
+}
+
+// NewCtx constructs ctx from given parameters.
+func NewModalCTX(
+	s *discordgo.Session,
+	caller *Modal,
+	i *discordgo.Interaction,
+	options map[string]string,
+	data discordgo.ModalSubmitInteractionData,
+	handlers []Handler,
+) *Ctx {
+	return &Ctx{
+		Session:     s,
+		Modal:       caller,
+		Interaction: i,
+
+		ModalData:    data,
+		ModalOptions: options,
+
+		remainingHandlers: handlers,
+	}
+}
+
+func makeOptionMap(
+	options []*discordgo.ApplicationCommandInteractionDataOption,
+) (m OptionsMap) {
 	m = make(OptionsMap, len(options))
 
 	for _, option := range options {
@@ -93,7 +152,10 @@ func (ctx *MessageCtx) Next() {
 
 // Reply sends and returns a simple (content-only) message replying to the command message. If mention is true the command author is mentioned in the reply.
 // It is a wrapper for discordgo.Session.ChannelMessageSendReply.
-func (ctx *MessageCtx) Reply(content string, mention bool) (*discordgo.Message, error) {
+func (ctx *MessageCtx) Reply(
+	content string,
+	mention bool,
+) (*discordgo.Message, error) {
 	return ctx.ReplyComplex(&discordgo.MessageSend{
 		Content: content,
 	}, mention)
@@ -101,7 +163,10 @@ func (ctx *MessageCtx) Reply(content string, mention bool) (*discordgo.Message, 
 
 // ReplyComplex sends and returns a complex (with embds, attachments, etc) message replying to the command message.
 // If mention is true the command author is mentioned in the reply. It is a wrapper for discordgo.Session.ChannelMessageSendComplex
-func (ctx *MessageCtx) ReplyComplex(message *discordgo.MessageSend, mention bool) (*discordgo.Message, error) {
+func (ctx *MessageCtx) ReplyComplex(
+	message *discordgo.MessageSend,
+	mention bool,
+) (*discordgo.Message, error) {
 	message.Reference = ctx.Message.Reference()
 	// TODO: https://github.com/bwmarrin/discordgo/pull/1009
 	// message.AllowedMentions.RepliedUser = mention
@@ -111,7 +176,13 @@ func (ctx *MessageCtx) ReplyComplex(message *discordgo.MessageSend, mention bool
 
 // NewMessageCtx constructs context from a message.
 // If argdelim is not empty it is a delimiter for the arguments, otherwise the arguments are split by a space.
-func NewMessageCtx(s *discordgo.Session, caller *Command, m *discordgo.Message, arguments []string, handlers []MessageHandler) *MessageCtx {
+func NewMessageCtx(
+	s *discordgo.Session,
+	caller *Command,
+	m *discordgo.Message,
+	arguments []string,
+	handlers []MessageHandler,
+) *MessageCtx {
 	return &MessageCtx{
 		Session:           s,
 		Caller:            caller,
