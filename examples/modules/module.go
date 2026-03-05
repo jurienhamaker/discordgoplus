@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/FedorLap2006/disgolf"
 	"github.com/bwmarrin/discordgo"
+	"github.com/jurienhamaker/disgolf"
 )
 
 type ExampleModule struct{}
@@ -58,15 +58,17 @@ func (m ExampleModule) Commands() []*disgolf.Command {
 					},
 				})
 			}),
-			MessageHandler: disgolf.MessageHandlerFunc(func(ctx *disgolf.MessageCtx) {
-				_, _ = ctx.Reply(
-					fmt.Sprintf(
-						":ping_pong: %v",
-						m.PingFunctional(ctx.Session),
-					),
-					false,
-				)
-			}),
+			MessageHandler: disgolf.MessageHandlerFunc(
+				func(ctx *disgolf.MessageCtx) {
+					_, _ = ctx.Reply(
+						fmt.Sprintf(
+							":ping_pong: %v",
+							m.PingFunctional(ctx.Session),
+						),
+						false,
+					)
+				},
+			),
 		},
 	}
 }

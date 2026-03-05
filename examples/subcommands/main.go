@@ -8,9 +8,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/FedorLap2006/disgolf"
 	"github.com/bwmarrin/discordgo"
 	dotenv "github.com/joho/godotenv"
+	"github.com/jurienhamaker/disgolf"
 )
 
 func init() {
@@ -64,17 +64,23 @@ func main() {
 						Handler: disgolf.HandlerFunc(func(ctx *disgolf.Ctx) {
 							_ = ctx.Respond(&discordgo.InteractionResponse{
 								Type: discordgo.InteractionResponseChannelMessageWithSource,
-								Data: &discordgo.InteractionResponseData{Content: "hi (group)"},
+								Data: &discordgo.InteractionResponseData{
+									Content: "hi (group)",
+								},
 							})
 						}),
-						MessageHandler: disgolf.MessageHandlerFunc(func(ctx *disgolf.MessageCtx) {
-							_, _ = ctx.Reply("hi (group)", false)
-						}),
+						MessageHandler: disgolf.MessageHandlerFunc(
+							func(ctx *disgolf.MessageCtx) {
+								_, _ = ctx.Reply("hi (group)", false)
+							},
+						),
 						MessageMiddlewares: []disgolf.MessageHandler{
-							disgolf.MessageHandlerFunc(func(ctx *disgolf.MessageCtx) {
-								fmt.Println("individual middleware")
-								ctx.Next()
-							}),
+							disgolf.MessageHandlerFunc(
+								func(ctx *disgolf.MessageCtx) {
+									fmt.Println("individual middleware")
+									ctx.Next()
+								},
+							),
 						},
 						Middlewares: []disgolf.Handler{
 							disgolf.HandlerFunc(func(ctx *disgolf.Ctx) {
@@ -84,9 +90,11 @@ func main() {
 						},
 					},
 				}),
-				MessageHandler: disgolf.MessageHandlerFunc(func(ctx *disgolf.MessageCtx) {
-					_, _ = ctx.Reply("hi (group default)", false)
-				}),
+				MessageHandler: disgolf.MessageHandlerFunc(
+					func(ctx *disgolf.MessageCtx) {
+						_, _ = ctx.Reply("hi (group default)", false)
+					},
+				),
 			},
 			{
 				Name:        "subcommand",
@@ -97,9 +105,11 @@ func main() {
 						Data: &discordgo.InteractionResponseData{Content: "hi"},
 					})
 				}),
-				MessageHandler: disgolf.MessageHandlerFunc(func(ctx *disgolf.MessageCtx) {
-					_, _ = ctx.Reply("hi", false)
-				}),
+				MessageHandler: disgolf.MessageHandlerFunc(
+					func(ctx *disgolf.MessageCtx) {
+						_, _ = ctx.Reply("hi", false)
+					},
+				),
 				MessageMiddlewares: []disgolf.MessageHandler{
 					disgolf.MessageHandlerFunc(func(ctx *disgolf.MessageCtx) {
 						fmt.Println("individual middleware (2nd level)")
@@ -114,9 +124,11 @@ func main() {
 				},
 			},
 		}),
-		MessageHandler: disgolf.MessageHandlerFunc(func(ctx *disgolf.MessageCtx) {
-			_, _ = ctx.Reply("hi (default)", false)
-		}),
+		MessageHandler: disgolf.MessageHandlerFunc(
+			func(ctx *disgolf.MessageCtx) {
+				_, _ = ctx.Reply("hi (default)", false)
+			},
+		),
 	})
 	bot.AddHandler(func(s *discordgo.Session, r *discordgo.Ready) {
 		log.Println("Bot is up!")

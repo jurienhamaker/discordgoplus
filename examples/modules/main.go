@@ -7,9 +7,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/FedorLap2006/disgolf"
 	"github.com/bwmarrin/discordgo"
 	dotenv "github.com/joho/godotenv"
+	"github.com/jurienhamaker/disgolf"
 )
 
 func init() {
@@ -42,7 +42,9 @@ func main() {
 		Prefixes:      []string{"d.", "dis.", "disgolf."},
 		MentionPrefix: true,
 	}))
-	bot.AddHandler(func(*discordgo.Session, *discordgo.Ready) { log.Println("Ready!") })
+	bot.AddHandler(
+		func(*discordgo.Session, *discordgo.Ready) { log.Println("Ready!") },
+	)
 	err = bot.Open()
 	if err != nil {
 		log.Fatal(fmt.Errorf("failed to open session: %w", err))

@@ -8,9 +8,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/FedorLap2006/disgolf"
 	"github.com/bwmarrin/discordgo"
 	dotenv "github.com/joho/godotenv"
+	"github.com/jurienhamaker/disgolf"
 )
 
 func init() {
@@ -37,9 +37,11 @@ func main() {
 				},
 			})
 		}),
-		MessageHandler: disgolf.MessageHandlerFunc(func(ctx *disgolf.MessageCtx) {
-			_, _ = ctx.Reply("Hi, I'm a bot built on Disgolf library", true)
-		}),
+		MessageHandler: disgolf.MessageHandlerFunc(
+			func(ctx *disgolf.MessageCtx) {
+				_, _ = ctx.Reply("Hi, I'm a bot built on Disgolf library", true)
+			},
+		),
 
 		Middlewares: []disgolf.Handler{
 			disgolf.HandlerFunc(func(ctx *disgolf.Ctx) {
