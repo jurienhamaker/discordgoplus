@@ -1,4 +1,7 @@
-<div align="center"><h2>Make Discord bots on Go with ease</h2></div>
+<div align="center">
+<h1>Discordgo-Plus</h1>
+<h2>Make Discord bots on Go with ease</h2>
+</div>
 
 ## About
 
