@@ -10,7 +10,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	dotenv "github.com/joho/godotenv"
-	"github.com/jurienhamaker/disgolf"
+	"github.com/jurienhamaker/discordgoplus"
 )
 
 func init() {
@@ -21,47 +21,47 @@ func init() {
 }
 
 func main() {
-	bot, err := disgolf.New(os.Getenv("BOT_TOKEN"))
+	bot, err := discordgoplus.New(os.Getenv("BOT_TOKEN"))
 	if err != nil {
 		log.Fatal(err)
 	}
-	bot.Router.Register(&disgolf.Command{
+	bot.Router.Register(&discordgoplus.Command{
 		Name:        "subcommands",
 		Description: "Lo and behold, subcommands are coming!",
 		Type:        discordgo.ChatApplicationCommand,
-		MessageMiddlewares: []disgolf.MessageHandler{
-			disgolf.MessageHandlerFunc(func(ctx *disgolf.MessageCtx) {
+		MessageMiddlewares: []discordgoplus.MessageHandler{
+			discordgoplus.MessageHandlerFunc(func(ctx *discordgoplus.MessageCtx) {
 				fmt.Println("middleware")
 				ctx.Next()
 			}),
 		},
-		Middlewares: []disgolf.Handler{
-			disgolf.HandlerFunc(func(ctx *disgolf.Ctx) {
+		Middlewares: []discordgoplus.Handler{
+			discordgoplus.HandlerFunc(func(ctx *discordgoplus.Ctx) {
 				fmt.Println("middleware")
 				ctx.Next()
 			}),
 		},
-		SubCommands: disgolf.NewRouter([]*disgolf.Command{
+		SubCommands: discordgoplus.NewRouter([]*discordgoplus.Command{
 			{
 				Name:        "group",
 				Description: "Subcommand group",
-				MessageMiddlewares: []disgolf.MessageHandler{
-					disgolf.MessageHandlerFunc(func(ctx *disgolf.MessageCtx) {
+				MessageMiddlewares: []discordgoplus.MessageHandler{
+					discordgoplus.MessageHandlerFunc(func(ctx *discordgoplus.MessageCtx) {
 						fmt.Println("group middleware")
 						ctx.Next()
 					}),
 				},
-				Middlewares: []disgolf.Handler{
-					disgolf.HandlerFunc(func(ctx *disgolf.Ctx) {
+				Middlewares: []discordgoplus.Handler{
+					discordgoplus.HandlerFunc(func(ctx *discordgoplus.Ctx) {
 						fmt.Println("group middleware")
 						ctx.Next()
 					}),
 				},
-				SubCommands: disgolf.NewRouter([]*disgolf.Command{
+				SubCommands: discordgoplus.NewRouter([]*discordgoplus.Command{
 					{
 						Name:        "subcommand",
 						Description: "Subcommand in a subcommand group",
-						Handler: disgolf.HandlerFunc(func(ctx *disgolf.Ctx) {
+						Handler: discordgoplus.HandlerFunc(func(ctx *discordgoplus.Ctx) {
 							_ = ctx.Respond(&discordgo.InteractionResponse{
 								Type: discordgo.InteractionResponseChannelMessageWithSource,
 								Data: &discordgo.InteractionResponseData{
@@ -69,29 +69,29 @@ func main() {
 								},
 							})
 						}),
-						MessageHandler: disgolf.MessageHandlerFunc(
-							func(ctx *disgolf.MessageCtx) {
+						MessageHandler: discordgoplus.MessageHandlerFunc(
+							func(ctx *discordgoplus.MessageCtx) {
 								_, _ = ctx.Reply("hi (group)", false)
 							},
 						),
-						MessageMiddlewares: []disgolf.MessageHandler{
-							disgolf.MessageHandlerFunc(
-								func(ctx *disgolf.MessageCtx) {
+						MessageMiddlewares: []discordgoplus.MessageHandler{
+							discordgoplus.MessageHandlerFunc(
+								func(ctx *discordgoplus.MessageCtx) {
 									fmt.Println("individual middleware")
 									ctx.Next()
 								},
 							),
 						},
-						Middlewares: []disgolf.Handler{
-							disgolf.HandlerFunc(func(ctx *disgolf.Ctx) {
+						Middlewares: []discordgoplus.Handler{
+							discordgoplus.HandlerFunc(func(ctx *discordgoplus.Ctx) {
 								fmt.Println("individual middleware")
 								ctx.Next()
 							}),
 						},
 					},
 				}),
-				MessageHandler: disgolf.MessageHandlerFunc(
-					func(ctx *disgolf.MessageCtx) {
+				MessageHandler: discordgoplus.MessageHandlerFunc(
+					func(ctx *discordgoplus.MessageCtx) {
 						_, _ = ctx.Reply("hi (group default)", false)
 					},
 				),
@@ -99,33 +99,33 @@ func main() {
 			{
 				Name:        "subcommand",
 				Description: "Just a subcommand",
-				Handler: disgolf.HandlerFunc(func(ctx *disgolf.Ctx) {
+				Handler: discordgoplus.HandlerFunc(func(ctx *discordgoplus.Ctx) {
 					_ = ctx.Respond(&discordgo.InteractionResponse{
 						Type: discordgo.InteractionResponseChannelMessageWithSource,
 						Data: &discordgo.InteractionResponseData{Content: "hi"},
 					})
 				}),
-				MessageHandler: disgolf.MessageHandlerFunc(
-					func(ctx *disgolf.MessageCtx) {
+				MessageHandler: discordgoplus.MessageHandlerFunc(
+					func(ctx *discordgoplus.MessageCtx) {
 						_, _ = ctx.Reply("hi", false)
 					},
 				),
-				MessageMiddlewares: []disgolf.MessageHandler{
-					disgolf.MessageHandlerFunc(func(ctx *disgolf.MessageCtx) {
+				MessageMiddlewares: []discordgoplus.MessageHandler{
+					discordgoplus.MessageHandlerFunc(func(ctx *discordgoplus.MessageCtx) {
 						fmt.Println("individual middleware (2nd level)")
 						ctx.Next()
 					}),
 				},
-				Middlewares: []disgolf.Handler{
-					disgolf.HandlerFunc(func(ctx *disgolf.Ctx) {
+				Middlewares: []discordgoplus.Handler{
+					discordgoplus.HandlerFunc(func(ctx *discordgoplus.Ctx) {
 						fmt.Println("individual middleware (2nd level)")
 						ctx.Next()
 					}),
 				},
 			},
 		}),
-		MessageHandler: disgolf.MessageHandlerFunc(
-			func(ctx *disgolf.MessageCtx) {
+		MessageHandler: discordgoplus.MessageHandlerFunc(
+			func(ctx *discordgoplus.MessageCtx) {
 				_, _ = ctx.Reply("hi (default)", false)
 			},
 		),
@@ -134,8 +134,8 @@ func main() {
 		log.Println("Bot is up!")
 	})
 	bot.AddHandler(bot.Router.HandleInteraction)
-	bot.AddHandler(bot.Router.MakeMessageHandler(&disgolf.MessageHandlerConfig{
-		Prefixes:      []string{"d.", "dis.", "disgolf."},
+	bot.AddHandler(bot.Router.MakeMessageHandler(&discordgoplus.MessageHandlerConfig{
+		Prefixes:      []string{"d.", "dis.", "discordgoplus."},
 		MentionPrefix: true,
 	}))
 

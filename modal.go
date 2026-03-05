@@ -1,4 +1,4 @@
-package disgolf
+package discordgoplus
 
 // Modal represents a modal component
 type Modal struct {

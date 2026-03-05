@@ -1,6 +1,6 @@
 // All credits go to the pat package for these utilities
 // https://github.com/bmizerany/pat/blob/0e6a57d3996914bbea76de5a2ce30fc1dbe82e9e/mux.go#L287
-package disgolf
+package discordgoplus
 
 func matchPart(b byte) func(byte) bool {
 	return func(c byte) bool {

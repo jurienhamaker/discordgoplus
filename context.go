@@ -1,4 +1,4 @@
-package disgolf
+package discordgoplus
 
 import (
 	"fmt"

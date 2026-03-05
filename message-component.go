@@ -1,4 +1,4 @@
-package disgolf
+package discordgoplus
 
 // MessageComponent represents a message component
 type MessageComponent struct {

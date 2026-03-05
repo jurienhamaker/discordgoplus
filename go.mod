@@ -1,4 +1,4 @@
-module github.com/jurienhamaker/disgolf
+module github.com/jurienhamaker/discordgoplus
 
 go 1.15
 

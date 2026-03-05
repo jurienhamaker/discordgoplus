@@ -10,7 +10,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	dotenv "github.com/joho/godotenv"
-	"github.com/jurienhamaker/disgolf"
+	"github.com/jurienhamaker/discordgoplus"
 )
 
 func init() {
@@ -21,15 +21,15 @@ func init() {
 }
 
 func main() {
-	bot, err := disgolf.New(os.Getenv("BOT_TOKEN"))
+	bot, err := discordgoplus.New(os.Getenv("BOT_TOKEN"))
 	if err != nil {
 		log.Fatal(err)
 	}
-	bot.Router.Register(&disgolf.Command{
+	bot.Router.Register(&discordgoplus.Command{
 		Name:        "ping_pong",
 		Description: "Ping it!",
 		Type:        discordgo.ChatApplicationCommand,
-		Handler: disgolf.HandlerFunc(func(ctx *disgolf.Ctx) {
+		Handler: discordgoplus.HandlerFunc(func(ctx *discordgoplus.Ctx) {
 			_ = ctx.Respond(&discordgo.InteractionResponse{
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
 				Data: &discordgo.InteractionResponseData{
@@ -37,34 +37,38 @@ func main() {
 				},
 			})
 		}),
-		MessageHandler: disgolf.MessageHandlerFunc(
-			func(ctx *disgolf.MessageCtx) {
+		MessageHandler: discordgoplus.MessageHandlerFunc(
+			func(ctx *discordgoplus.MessageCtx) {
 				_, _ = ctx.Reply("Hi, I'm a bot built on Disgolf library", true)
 			},
 		),
 
-		Middlewares: []disgolf.Handler{
-			disgolf.HandlerFunc(func(ctx *disgolf.Ctx) {
+		Middlewares: []discordgoplus.Handler{
+			discordgoplus.HandlerFunc(func(ctx *discordgoplus.Ctx) {
 				fmt.Println("Middleware worked!")
 				ctx.Next()
 			}),
 		},
 
-		MessageMiddlewares: []disgolf.MessageHandler{
-			disgolf.MessageHandlerFunc(func(ctx *disgolf.MessageCtx) {
-				fmt.Println("Message niddleware worked!", ctx.Arguments)
-				ctx.Next()
-			}),
+		MessageMiddlewares: []discordgoplus.MessageHandler{
+			discordgoplus.MessageHandlerFunc(
+				func(ctx *discordgoplus.MessageCtx) {
+					fmt.Println("Message niddleware worked!", ctx.Arguments)
+					ctx.Next()
+				},
+			),
 		},
 	})
 	bot.AddHandler(func(s *discordgo.Session, r *discordgo.Ready) {
 		log.Println("Bot is up!")
 	})
 	bot.AddHandler(bot.Router.HandleInteraction)
-	bot.AddHandler(bot.Router.MakeMessageHandler(&disgolf.MessageHandlerConfig{
-		Prefixes:      []string{"d.", "dis.", "disgolf."},
-		MentionPrefix: true,
-	}))
+	bot.AddHandler(
+		bot.Router.MakeMessageHandler(&discordgoplus.MessageHandlerConfig{
+			Prefixes:      []string{"d.", "dis.", "discordgoplus."},
+			MentionPrefix: true,
+		}),
+	)
 
 	err = bot.Open()
 	if err != nil {

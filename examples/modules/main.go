@@ -9,7 +9,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	dotenv "github.com/joho/godotenv"
-	"github.com/jurienhamaker/disgolf"
+	"github.com/jurienhamaker/discordgoplus"
 )
 
 func init() {
@@ -19,11 +19,11 @@ func init() {
 	}
 }
 
-var modules = []interface{ Commands() []*disgolf.Command }{
+var modules = []interface{ Commands() []*discordgoplus.Command }{
 	ExampleModule{},
 }
 
-func loadModules(bot *disgolf.Bot) {
+func loadModules(bot *discordgoplus.Bot) {
 	for _, m := range modules {
 		for _, command := range m.Commands() {
 			bot.Router.Register(command)
@@ -32,14 +32,14 @@ func loadModules(bot *disgolf.Bot) {
 }
 
 func main() {
-	bot, err := disgolf.New(os.Getenv("BOT_TOKEN"))
+	bot, err := discordgoplus.New(os.Getenv("BOT_TOKEN"))
 	if err != nil {
 		log.Fatal(fmt.Errorf("failed to initialise session: %w", err))
 	}
 	loadModules(bot)
 	bot.AddHandler(bot.Router.HandleInteraction)
-	bot.AddHandler(bot.Router.MakeMessageHandler(&disgolf.MessageHandlerConfig{
-		Prefixes:      []string{"d.", "dis.", "disgolf."},
+	bot.AddHandler(bot.Router.MakeMessageHandler(&discordgoplus.MessageHandlerConfig{
+		Prefixes:      []string{"d.", "dis.", "discordgoplus."},
 		MentionPrefix: true,
 	}))
 	bot.AddHandler(

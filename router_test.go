@@ -1,17 +1,17 @@
-package disgolf_test
+package discordgoplus_test
 
 import (
 	"testing"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/jurienhamaker/disgolf"
+	"github.com/jurienhamaker/discordgoplus"
 	"github.com/stretchr/testify/assert"
 )
 
-var router = disgolf.NewRouter(nil)
+var router = discordgoplus.NewRouter(nil)
 
 func TestRouter_Register(t *testing.T) {
-	command := &disgolf.Command{
+	command := &discordgoplus.Command{
 		Name:        "test_register",
 		Description: "test register",
 		Type:        discordgo.ChatApplicationCommand,
@@ -26,7 +26,7 @@ func TestRouter_Register(t *testing.T) {
 }
 
 func TestRouter_Get(t *testing.T) {
-	command := &disgolf.Command{
+	command := &discordgoplus.Command{
 		Name:        "test_get",
 		Description: "test get",
 		Type:        discordgo.ChatApplicationCommand,
@@ -41,7 +41,7 @@ func TestRouter_Get(t *testing.T) {
 }
 
 func TestRouter_Update(t *testing.T) {
-	command := &disgolf.Command{
+	command := &discordgoplus.Command{
 		Name:        "test_update",
 		Description: "test update",
 		Type:        discordgo.MessageApplicationCommand,
@@ -49,7 +49,7 @@ func TestRouter_Update(t *testing.T) {
 	router.Register(command)
 	defer router.Unregister(command.Name)
 
-	newCommand := &disgolf.Command{
+	newCommand := &discordgoplus.Command{
 		Name:        "test_update",
 		Description: "test update",
 		Type:        discordgo.ChatApplicationCommand,
@@ -63,7 +63,7 @@ func TestRouter_Update(t *testing.T) {
 }
 
 func TestRouter_Unregister(t *testing.T) {
-	command := &disgolf.Command{
+	command := &discordgoplus.Command{
 		Name:        "test_unregister",
 		Description: "test unregister",
 		Type:        discordgo.ChatApplicationCommand,
@@ -82,7 +82,7 @@ func TestRouter_Unregister(t *testing.T) {
 }
 
 func TestRouter_List(t *testing.T) {
-	commandList := []*disgolf.Command{
+	commandList := []*discordgoplus.Command{
 		{
 			Name:        "test_list_0",
 			Description: "test list 0",
@@ -110,7 +110,7 @@ func TestRouter_List(t *testing.T) {
 }
 
 func TestRouter_Count(t *testing.T) {
-	commandList := []*disgolf.Command{
+	commandList := []*discordgoplus.Command{
 		{
 			Name:        "test_count_0",
 			Description: "test count 0",
