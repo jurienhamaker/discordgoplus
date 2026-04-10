@@ -35,6 +35,10 @@ func ParseModalDataV2(
 		if cmpnt.Type() == 3 {
 			input := cmpnt.(*discordgo.SelectMenu)
 
+			if len(input.Values) == 0 {
+				continue
+			}
+
 			if input.MaxValues == 1 || input.MaxValues == 0 {
 				data[input.CustomID] = input.Values[0]
 				continue
@@ -53,6 +57,10 @@ func ParseModalDataV2(
 			input := cmpnt.(*discordgo.FileUpload)
 
 			if input.MaxValues == 1 || input.MaxValues == 0 {
+				if len(input.Values) == 0 {
+					continue
+				}
+
 				data[input.CustomID] = modalData.Resolved.Attachments[input.Values[0]]
 				continue
 			}
