@@ -45,6 +45,7 @@ func ParseModalDataV2(
 			}
 
 			data[input.CustomID] = input.Values
+			continue
 		}
 
 		if cmpnt.Type() == 4 {
@@ -71,6 +72,7 @@ func ParseModalDataV2(
 			}
 
 			data[input.CustomID] = values
+			continue
 		}
 
 		fmt.Println(cmpnt.Type())
