@@ -39,11 +39,6 @@ func ParseModalDataV2(
 				continue
 			}
 
-			if input.MaxValues == 1 || input.MaxValues == 0 {
-				data[input.CustomID] = input.Values[0]
-				continue
-			}
-
 			data[input.CustomID] = input.Values
 			continue
 		}
@@ -56,15 +51,6 @@ func ParseModalDataV2(
 
 		if cmpnt.Type() == 19 {
 			input := cmpnt.(*discordgo.FileUpload)
-
-			if input.MaxValues == 1 || input.MaxValues == 0 {
-				if len(input.Values) == 0 {
-					continue
-				}
-
-				data[input.CustomID] = modalData.Resolved.Attachments[input.Values[0]]
-				continue
-			}
 
 			values := make([]*discordgo.MessageAttachment, 0)
 			for _, value := range input.Values {
