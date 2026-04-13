@@ -32,7 +32,7 @@ func ParseModalDataV2(
 		labelRow := row.(*discordgo.Label)
 		cmpnt := labelRow.Component
 
-		if cmpnt.Type() == 3 {
+		if cmpnt.Type() == 3 || cmpnt.Type() == 5 {
 			input := cmpnt.(*discordgo.SelectMenu)
 
 			if len(input.Values) == 0 {
