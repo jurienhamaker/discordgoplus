@@ -239,7 +239,7 @@ func (r *Router) CountMessageComponents() (c int) {
 }
 
 // CountModals returns amount of modals stored
-func (r *Router) CoundModals() (c int) {
+func (r *Router) CountModals() (c int) {
 	if r == nil {
 		return 0
 	}
